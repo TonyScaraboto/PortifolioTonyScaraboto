@@ -1,0 +1,847 @@
+/* Ideia: processador como tela inicial; o cursor é a chave que energiza as trilhas; o clique liga a placa. */
+
+/* paleta. azul de pcb em fundo quase preto. as fontes vêm do google fonts no html */
+:root {
+  --bg: #030814;
+  --panel: rgba(6, 16, 43, 0.82);
+  --line: #17358A;
+  --blue: #1E6BFF;
+  --blue-hi: #4DA3FF;
+  --ice: #CFE9FF;
+  --text: #E6F0FF;
+  --muted: #BCD0F0;
+  --display: 'Chakra Petch', system-ui, sans-serif; /* títulos grandes */
+  --body: 'DM Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace; /* índices, nav, rótulos */
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  line-height: 1.55;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* trava o scroll enquanto a intro está na frente. .ready libera a página */
+body {
+  overflow: hidden;
+}
+
+body.ready {
+  overflow: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--ice);
+  outline-offset: 3px;
+}
+
+/* canvas cobre a janela inteira e fica atrás do texto */
+#c {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  cursor: none;
+}
+
+body.ready #c {
+  cursor: none;
+}
+
+/* Tela inicial. pointer-events none pra o clique ir pro canvas, em cima do processador */
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7vh 24px;
+  text-align: center;
+  transition: opacity .6s ease;
+}
+
+body.booting #intro,
+body.ready #intro {
+  opacity: 0;
+}
+
+body.ready #intro {
+  visibility: hidden;
+}
+
+.brand {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--blue-hi);
+}
+
+#intro h1 {
+  margin: 12px 0 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(30px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -.01em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+#intro p {
+  margin: 0 auto;
+  max-width: 460px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+/* Site: diário editorial, sem cartões. começa invisível e entra com .ready */
+#site {
+  position: relative;
+  z-index: 2;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .8s ease .1s;
+}
+
+body.ready #site {
+  visibility: visible;
+  opacity: 1;
+}
+
+.wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 max(32px, env(safe-area-inset-right)) 0 max(32px, env(safe-area-inset-left));
+}
+
+/* sticky, não fixed: o texto nasce abaixo do menu e o #sobre não entra debaixo dele */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding: 18px 0 22px;
+  background: linear-gradient(#030814 0%, #030814 68%, rgba(3, 8, 20, 0) 100%);
+}
+
+#sobre,
+#projetos,
+#contato {
+  scroll-margin-top: 88px;
+}
+
+.bar .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: .02em;
+}
+
+.logo b {
+  color: var(--blue-hi);
+}
+
+.bar nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+  font-family: var(--mono);
+  font-size: 14px;
+  text-transform: lowercase;
+}
+
+.bar nav a {
+  color: var(--muted);
+}
+
+.bar nav a b {
+  color: var(--blue-hi);
+  font-weight: 500;
+  margin-right: 6px;
+}
+
+.bar nav a:hover {
+  color: #fff;
+}
+
+/* rótulo pequeno, tipo etiqueta de componente */
+.lab {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--blue-hi);
+}
+
+.hero {
+  padding: 36px 0 40px;
+}
+
+.manifesto {
+  margin: 28px 0 0;
+  max-width: 1180px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(34px, 6.2vw, 92px);
+  line-height: 1.05;
+  letter-spacing: -.02em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.manifesto em {
+  font-style: normal;
+  color: var(--blue-hi);
+}
+
+/* planeta holográfico no meio da frase. o grupo .spin gira os meridianos dentro do recorte */
+.manifesto .planet {
+  display: inline-block;
+  width: 1.55em;
+  height: 1.55em;
+  margin: 0 .08em;
+  vertical-align: -.42em;
+}
+
+.manifesto .planet svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 .08em rgba(77, 163, 255, .85));
+}
+
+.manifesto .planet .spin {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: planet-spin 7s linear infinite;
+}
+
+@keyframes planet-spin {
+  to { transform: rotate(360deg); }
+}
+
+.manifesto .keep {
+  white-space: nowrap;
+}
+
+/* celular ao lado de mobile. inclina como se estivesse na mão */
+.manifesto .phone {
+  display: inline-block;
+  width: 1.35em;
+  height: 1.35em;
+  margin: 0 .04em 0 .1em;
+  vertical-align: -.38em;
+}
+
+.manifesto .phone svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 .08em rgba(77, 163, 255, .75));
+}
+
+.manifesto .phone .shake {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: phone-shake 1.4s ease-in-out infinite;
+}
+
+.manifesto .phone .bar {
+  animation: phone-type 1.4s ease-in-out infinite;
+}
+
+@keyframes phone-shake {
+  0%, 100% { transform: rotate(-16deg) translateY(1px); }
+  50% { transform: rotate(14deg) translateY(-2px); }
+}
+
+@keyframes phone-type {
+  0%, 100% { opacity: .45; }
+  50% { opacity: 1; }
+}
+
+.cols {
+  margin-top: 96px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 36px 40px;
+}
+
+.cols ul {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 19px;
+  color: #E6F0FF;
+}
+
+/* svg da trilha entre as seções. o path é desenhado no html */
+.sep {
+  display: block;
+  width: 100%;
+  height: 40px;
+  margin: 72px 0 0;
+}
+
+.sep path {
+  fill: none;
+  stroke: #1E6BFF;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.sec {
+  padding: 56px 0 8px;
+}
+
+.sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.sec-head .lab {
+  margin: 0;
+  font-weight: 500;
+}
+
+.sec-head .count {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .16em;
+  color: var(--muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* índice | stack | nome | link. a linha de cima é a borda entre entradas */
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px 200px 1fr auto;
+  gap: 8px 24px;
+  align-items: baseline;
+  padding: 34px 0;
+  border-top: 1px solid rgba(77, 163, 255, .25);
+  transition: opacity .3s;
+}
+
+.list > .row:last-child {
+  border-bottom: 1px solid rgba(77, 163, 255, .25);
+}
+
+.row .idx {
+  font-family: var(--mono);
+  color: var(--blue-hi);
+  font-size: 15px;
+}
+
+.row .meta {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.row .title {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(34px, 6vw, 88px);
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: #E6F0FF;
+  word-break: break-word;
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1), color .3s;
+}
+
+.row .tech {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--ice);
+}
+
+.ic {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: color .3s;
+}
+
+.row:hover .ic,
+.row:focus-visible .ic {
+  color: var(--blue-hi);
+}
+
+.row .more {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* <i> vazio: risco azul que corre da esquerda até o fim no hover */
+.row i {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  height: 2px;
+  width: 0;
+  background: var(--blue-hi);
+  box-shadow: 0 0 14px rgba(77, 163, 255, .9);
+  transition: width .6s cubic-bezier(.2, .7, .2, 1);
+}
+
+.row:hover i,
+.row:focus-visible i {
+  width: 100%;
+}
+
+.row:hover .title,
+.row:focus-visible .title {
+  transform: translateX(18px);
+  color: #fff;
+}
+
+.row:hover .more {
+  color: var(--ice);
+}
+
+/* com o mouse na lista, as outras entradas apagam um pouco */
+@media (hover: hover) {
+  .list:hover .row:not(:hover) {
+    opacity: .3;
+  }
+}
+
+/* diário: linha de log, não cartaz. índice | nome | chip | seta */
+#projetos .row {
+  grid-template-columns: 52px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px 18px;
+  padding: 15px 0;
+}
+
+#projetos .row .title {
+  font-size: clamp(20px, 1.7vw, 28px);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+#projetos .tech {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--blue-hi);
+  border: 1px solid rgba(77, 163, 255, .4);
+  border-radius: 4px;
+  padding: 4px 8px 4px 6px;
+  gap: 6px;
+}
+
+#projetos .ic {
+  width: 16px;
+  height: 16px;
+}
+
+#projetos .more {
+  width: 28px;
+  text-align: right;
+  color: var(--line);
+}
+
+#projetos .row:hover .title,
+#projetos .row:focus-visible .title {
+  transform: none;
+}
+
+#projetos .row:hover .more,
+#projetos .row:focus-visible .more {
+  color: var(--blue-hi);
+}
+
+#projetos .row:hover .tech,
+#projetos .row:focus-visible .tech {
+  border-color: var(--blue-hi);
+}
+
+@media (hover: hover) {
+  #projetos .list:hover .row:not(:hover) {
+    opacity: .5;
+  }
+}
+
+.row.sm {
+  padding: 22px 0; /* contato, título menor */
+}
+
+.row.sm .title {
+  font-size: clamp(24px, 3.4vw, 44px);
+}
+
+.contact {
+  padding: 96px 0 40px;
+}
+
+.contact .big {
+  margin: 20px 0 48px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(30px, 6.4vw, 96px);
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: #fff;
+  word-break: break-word;
+  text-wrap: balance;
+}
+
+.contact .big em {
+  font-style: normal;
+  color: var(--blue-hi);
+}
+
+footer {
+  margin-top: 72px;
+  border-top: 1px solid rgba(77, 163, 255, .25);
+}
+
+footer .wrap {
+  padding-top: 24px;
+  padding-bottom: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* teclado que segue o mouse depois do boot. o svg é montado em cursor.js */
+#kb {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 76px;
+  height: 34px;
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+body.ready #kb.seen {
+  opacity: 1;
+}
+
+#kb svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform .2s;
+  filter: drop-shadow(0 0 10px rgba(77, 163, 255, .7));
+}
+
+#kb.link svg {
+  transform: scale(1.3); /* cresce em cima de link ou botão */
+}
+
+#kb.down svg {
+  transform: scale(.88); /* clique */
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.ready,
+  body.ready a,
+  body.ready button {
+    cursor: none;
+  }
+}
+
+@media (hover: none) {
+  #kb {
+    display: none; /* touch: cursor nativo */
+  }
+}
+
+/* tela estreita: vale com mouse também, não só no toque */
+@media (max-width: 900px) {
+  #sobre,
+  #projetos,
+  #contato {
+    scroll-margin-top: 120px;
+  }
+
+  .bar {
+    background: #030814;
+  }
+
+  .bar .wrap {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px 0;
+    min-width: 0;
+  }
+
+  .bar nav {
+    flex-wrap: nowrap;
+    gap: 0 20px;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* o corte na direita avisa que o menu continua */
+    padding-right: 8px;
+    mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+  }
+
+  .bar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bar nav a {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .hero {
+    padding-top: 12px;
+  }
+
+  .manifesto {
+    font-size: clamp(30px, 8vw, 48px);
+  }
+
+  .cols {
+    margin-top: 48px;
+    gap: 28px 24px;
+  }
+
+  .cols ul {
+    font-size: 17px;
+  }
+
+  .sep {
+    margin-top: 40px;
+  }
+
+  .sec {
+    padding-top: 32px;
+  }
+
+  .row {
+    grid-template-columns: 36px 1fr;
+    gap: 2px 12px;
+    padding: 22px 0;
+    align-items: start;
+  }
+
+  .row .idx {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .row .meta {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .row .title {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: clamp(26px, 7.2vw, 36px);
+    word-break: normal;
+  }
+
+  .row .more {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .row:hover .title,
+  .row:focus-visible .title {
+    transform: none;
+  }
+
+  .row.sm .title {
+    font-size: clamp(20px, 5.2vw, 28px);
+  }
+
+  .row.sm {
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+  }
+
+  .row.sm .idx {
+    grid-row: 1;
+  }
+
+  .row.sm .title {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .row.sm .more {
+    grid-column: 3;
+    grid-row: 1;
+    min-height: 0;
+    justify-content: flex-end;
+  }
+
+  #projetos .row {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    padding: 14px 0;
+  }
+
+  #projetos .row .idx {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #projetos .row .title {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 20px;
+  }
+
+  #projetos .row .more {
+    grid-column: 3;
+    grid-row: 1;
+    min-height: 44px;
+    width: auto;
+  }
+
+  #projetos .row .tech {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .contact {
+    padding: 56px 0 24px;
+  }
+
+  .contact .big {
+    font-size: clamp(26px, 7.4vw, 44px);
+    margin-bottom: 28px;
+  }
+
+  footer {
+    margin-top: 40px;
+  }
+}
+
+/* Entrada do conteúdo depois do clique. d1 e d2 atrasam o título e as colunas */
+.rise {
+  transition: transform .8s cubic-bezier(.2, .7, .2, 1), opacity .8s ease;
+}
+
+body:not(.ready) .rise {
+  transform: translateY(18px);
+}
+
+body.ready .rise.d1 {
+  transition-delay: .15s;
+}
+
+body.ready .rise.d2 {
+  transition-delay: .3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .rise,
+  #site,
+  #intro,
+  .manifesto .planet .spin,
+  .manifesto .phone .shake,
+  .manifesto .phone .bar {
+    transition: none;
+    animation: none;
+  }
+
+  body:not(.ready) .rise {
+    transform: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .wrap {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+
+  #intro {
+    padding: 5vh 20px 0;
+  }
+
+  #intro h1 {
+    font-size: clamp(28px, 9vw, 40px);
+  }
+
+  #intro p {
+    font-size: 16px;
+  }
+
+  .lab {
+    letter-spacing: .08em;
+  }
+}

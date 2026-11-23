@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tony Scaraboto CPU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- fundo animado. o texto fica por cima, o canvas não recebe foco -->
+  <canvas id="c" aria-hidden="true"></canvas>
+
+  <!-- some quando o body ganha .booting. o clique em qualquer lugar liga a placa -->
+  <div id="intro">
+    <div>
+      <div class="brand">tony.scaraboto // full-stack typescript</div>
+      <h1>Tony Scaraboto.</h1>
+      <p>Projetos Web e Mobile. Clique para compilar a placa.</p>
+    </div>
+  </div>
+
+  <!-- portfólio. o css segura ele invisível até .ready -->
+  <div id="site">
+    <header class="bar">
+      <div class="wrap">
+        <a class="logo" href="#sobre">tony<b>/</b>scaraboto</a>
+        <nav aria-label="Principal">
+          <a href="#sobre"><b>01</b>sobre</a>
+          <a href="#projetos"><b>02</b>projetos</a>
+          <a href="https://github.com/TonyScaraboto" target="_blank" rel="noopener noreferrer"><b>03</b>github</a>
+          <a href="https://www.linkedin.com/in/antony-ítallo-de-souza-97701128b" target="_blank"
+            rel="noopener noreferrer"><b>04</b>linkedin</a>
+          <a href="https://wa.me/5513991836523?text=Ol%C3%A1%2C%20Tony!%20Vim%20pelo%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto."
+            target="_blank" rel="noopener noreferrer"><b>05</b>whatsapp</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap hero" id="sobre">
+        <div class="lab rise">Desenvolvedor Full-Stack TypeScript —</div>
+        <h1 class="manifesto rise d1">Tranformando ideias em experiências <em>web</em><span class="planet"
+            aria-hidden="true"><svg viewBox="0 0 80 80">
+              <defs>
+                <radialGradient id="planetBody" cx="36%" cy="32%" r="68%">
+                  <stop offset="0%" stop-color="#F4FBFF" />
+                  <stop offset="28%" stop-color="#7EC4FF" />
+                  <stop offset="62%" stop-color="#1E6BFF" />
+                  <stop offset="100%" stop-color="#071433" />
+                </radialGradient>
+                <linearGradient id="planetRing" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#CFE9FF" stop-opacity="0" />
+                  <stop offset="35%" stop-color="#4DA3FF" />
+                  <stop offset="70%" stop-color="#EAF6FF" />
+                  <stop offset="100%" stop-color="#1E6BFF" stop-opacity=".2" />
+                </linearGradient>
+                <clipPath id="planetClip">
+                  <circle cx="40" cy="40" r="16" />
+                </clipPath>
+              </defs>
+              <ellipse cx="40" cy="42" rx="28" ry="8" fill="none" stroke="url(#planetRing)" stroke-width="1.4"
+                transform="rotate(-18 40 42)" opacity=".55" />
+              <circle cx="40" cy="40" r="19" fill="none" stroke="#4DA3FF" stroke-width="1.2" opacity=".45" />
+              <circle cx="40" cy="40" r="16" fill="url(#planetBody)" />
+              <g clip-path="url(#planetClip)">
+                <g class="spin">
+                  <ellipse cx="40" cy="40" rx="6" ry="16" fill="none" stroke="#EAF6FF" stroke-width=".7" opacity=".7" />
+                  <ellipse cx="40" cy="40" rx="12" ry="16" fill="none" stroke="#CFE9FF" stroke-width=".7"
+                    opacity=".45" />
+                  <ellipse cx="22" cy="40" rx="6" ry="16" fill="none" stroke="#7EC4FF" stroke-width=".7" opacity=".4" />
+                  <ellipse cx="58" cy="40" rx="6" ry="16" fill="none" stroke="#7EC4FF" stroke-width=".7" opacity=".4" />
+                  <path d="M24 40h32M26 34h28M26 46h28" fill="none" stroke="#F4FBFF" stroke-width=".6" opacity=".45" />
+                </g>
+              </g>
+              <ellipse cx="40" cy="42" rx="28" ry="8" fill="none" stroke="url(#planetRing)" stroke-width="1.6"
+                stroke-dasharray="46 90" stroke-linecap="round" transform="rotate(-18 40 42)" />
+            </svg></span>e <span class="keep"><em>mobile</em><span class="phone" aria-hidden="true"><svg
+                viewBox="0 0 80 80">
+                <g class="shake">
+                  <rect x="27" y="10" width="26" height="54" rx="6" fill="#071433" stroke="#7EC4FF"
+                    stroke-width="1.6" />
+                  <rect x="30" y="16" width="20" height="40" rx="2" fill="#0B1E4A" />
+                  <rect class="bar" x="33" y="20" width="14" height="2.4" rx="1" fill="#EAF6FF" />
+                  <rect class="bar" x="33" y="25" width="10" height="2.4" rx="1" fill="#4DA3FF" />
+                  <rect x="33" y="30" width="14" height="12" rx="1.6" fill="#1E6BFF" opacity=".85" />
+                  <rect class="bar" x="33" y="45" width="12" height="2.4" rx="1" fill="#CFE9FF" opacity=".8" />
+                  <rect x="36" y="58" width="8" height="2" rx="1" fill="#4DA3FF" />
+                </g>
+              </svg></span></span> Projetos ponta a ponta desde o protótipo
+          até o usuario final.</h1>
+        <div class="cols rise d2">
+          <div>
+            <div class="lab">Disponibilidade —</div>
+            <ul>
+              <li>Aberto a projetos e conversas</li>
+              <li>WhatsApp e e-mail</li>
+            </ul>
+          </div>
+          <div>
+            <div class="lab">Serviços —</div>
+            <ul>
+              <li>Sites e landing pages</li>
+              <li>Aplicações web</li>
+              <li>Apps mobile</li>
+              <li>APIs em Node.js</li>
+            </ul>
+          </div>
+          <div>
+            <div class="lab">Formação —</div>
+            <ul>
+              <li>Análise e Desenvolvimento de Sistemas, fev 2027</li>
+              <li>Bacharelado em Inteligência Artificial, 2030</li>
+            </ul>
+          </div>
+          <div>
+            <div class="lab">Stack —</div>
+            <ul>
+              <li>TypeScript, JavaScript, Python</li>
+              <li>React, React Native, Astro</li>
+              <li>Node.js, Figma</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- trilha entre sobre e projetos. o traço quebra de propósito, como pista de placa -->
+      <div class="wrap"><svg class="sep" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 20H260L290 8H640L670 32H1200" />
+        </svg></div>
+
+      <section class="wrap sec" id="projetos">
+        <div class="sec-head">
+          <h2 class="lab">Diário de bordo</h2>
+          <span class="count">06</span>
+        </div>
+        <!-- log: índice, nome, chip da stack, seta. o <i> é o risco do hover -->
+        <div class="list">
+          <a class="row" href="https://www.maxpower.solutions/" target="_blank" rel="noopener noreferrer">
+            <i></i>
+            <span class="idx">01</span>
+            <span class="title">Max Power</span>
+            <span class="tech"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="4" /><text x="12" y="16" text-anchor="middle"
+                  font-size="9.5" font-weight="700" fill="currentColor" stroke="none"
+                  font-family="JetBrains Mono, monospace">TS</text>
+              </svg>TypeScript</span>
+            <span class="more" aria-hidden="true">↗</span>
+          </a>
+          <a class="row" href="https://scartechsolution.com.br" target="_blank" rel="noopener noreferrer">
+            <i></i>
+            <span class="idx">02</span>
+            <span class="title">Scartech Solution</span>
+            <span class="tech"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3.2" />
+                <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30 12 12)" />
+                <circle cx="19.5" cy="7.7" r="1.2" fill="currentColor" stroke="none" />
+              </svg>Astro</span>
+            <span class="more" aria-hidden="true">↗</span>
+          </a>
+          <a class="row" href="https://rwseventos.vercel.app/" target="_blank" rel="noopener noreferrer">
+            <i></i>
+            <span class="idx">03</span>
+            <span class="title">Ecommerce RWS-EVENTOS</span>
+            <span class="tech"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="4" /><text x="12" y="16" text-anchor="middle"
+                  font-size="9.5" font-weight="700" fill="currentColor" stroke="none"
+                  font-family="JetBrains Mono, monospace">JS</text>
+              </svg>JavaScript</span>
+            <span class="more" aria-hidden="true">↗</span>
+          </a>
+          <a class="row" href="https://www.scartechmanager.com.br/" target="_blank" rel="noopener noreferrer">
+            <i></i>
+            <span class="idx">04</span>
+            <span class="title">Scartech Maganer</span>
+            <span class="tech"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14" />
+              </svg>HTML</span>
+            <span class="more" aria-hidden="true">↗</span>
+          </a>
+          <a class="row" href="http://cascaoentulhos.com.br/" target="_blank" rel="noopener noreferrer">
+            <i></i>
+            <span class="idx">05</span>
+            <span class="title">Cascão Entulhos</span>
+            <span class="tech"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14" />
+              </svg>HTML</span>
+            <span class="more" aria-hidden="true">↗</span>
+          </a>
+          <a class="row" href="https://www.gmeletricista.com.br/" target="_blank" rel="noopener noreferrer">
+            <i></i>
+            <span class="idx">06</span>
+            <span class="title">GM-Eletrica</span>
+            <span class="tech"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 4C6.5 4 7.5 9 5 12c2.5 3 1.5 8 4 8M15 4c2.5 0 1.5 5 4 8-2.5 3-1.5 8-4 8" />
+              </svg>CSS</span>
+            <span class="more" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <div class="wrap"><svg class="sep" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 20H420L450 32H820L850 8H1200" />
+        </svg></div>
+
+      <section class="wrap contact" id="contato">
+        <div class="lab">Contato —</div>
+        <p class="big">Vamos construir algo <em>juntos?</em><br>antonyitallo@gmail.com</p>
+        <div class="list">
+          <a class="row sm" href="https://github.com/TonyScaraboto" target="_blank"
+            rel="noopener noreferrer"><i></i><span class="idx">03</span><span
+              class="title">github.com/TonyScaraboto</span><span class="more">↗</span></a>
+          <a class="row sm" href="https://www.linkedin.com/in/antony-ítallo-de-souza-97701128b" target="_blank"
+            rel="noopener noreferrer"><i></i><span class="idx">04</span><span class="title">linkedin</span><span
+              class="more">↗</span></a>
+          <a class="row sm"
+            href="https://wa.me/5513997069057?text=Ol%C3%A1%2C%20Tony!%20Vim%20pelo%20seu%20portf%C3%B3lio%20e%20quero%20conversar%20sobre%20um%20projeto."
+            target="_blank" rel="noopener noreferrer"><i></i><span class="idx">05</span><span
+              class="title">whatsapp</span><span class="more">↗</span></a>
+          class="idx">05</span><span class="title">whatsapp</span><span class="more">↗</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap"><span>Projetado e codado por Tony Scaraboto © 2026</span><a href="#sobre">Voltar ao topo ↑</a>
+      </div>
+    </footer>
+  </div>
+  <!-- cursor de teclado. cursor.js desenha as teclas e segue o ponteiro -->
+  <div id="kb" aria-hidden="true"></div>
+
+  <script src="placa.js"></script>
+  <script src="cursor.js"></script>
+</body>
+
+</html>
